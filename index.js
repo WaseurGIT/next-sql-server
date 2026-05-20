@@ -69,6 +69,29 @@ app.get("/products/:id", (req, res) => {
   }
 });
 
+app.put("/products/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name, price, image } = req.body;
+
+    const query =
+      "UPDATE products SET name = ?, price = ?, image = ? WHERE id = ?";
+    db.query(query, [name, price, image, id], (err, results) => {
+      if (err) {
+        console.log("Error updating product", err);
+        return res.status(500).json({ error: "Error updating product" });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json({ message: "Product updated successfully" });
+    });
+  } catch (error) {
+    console.log("Error updating product", error);
+    res.status(500).json({ error: "Error updating product" });
+  }
+});
+
 app.delete("/products/:id", (req, res) => {
   try {
     const id = req.params.id;
