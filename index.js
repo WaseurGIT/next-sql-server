@@ -41,7 +41,32 @@ app.get("/products", (req, res) => {
       }
       res.json(results);
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error fetching products", error);
+    res.status(500).json({ error: "Error fetching products" });
+  }
+});
+
+app.get("/products/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = "SELECT * FROM products WHERE id = ?";
+
+    db.query(query, [id], (err, results) => {
+      if (err) {
+        console.log("Error fetching product", err);
+        return res.status(500).json({ error: "Error fetching product" });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      res.json(results[0]);
+    });
+  } catch (error) {
+    console.log("Error fetching product", error);
+    res.status(500).json({ error: "Error fetching product" });
+  }
 });
 
 app.delete("/products/:id", (req, res) => {
