@@ -44,6 +44,23 @@ app.get("/products", (req, res) => {
   } catch (error) {}
 });
 
+app.delete("/products/:id", (req, res) => {
+  try {
+    const id = req.params.id;
+    const query = "DELETE FROM products WHERE id = ?";
+    db.query(query, [id], (err, results) => {
+      if (err) {
+        console.log("Error deleting product", err);
+        res.status(500).json({ error: "Error deleting product" });
+      }
+      res.json({ message: "Product deleted successfully" });
+    });
+  } catch (error) {
+    console.log("Error deleting product", error);
+    res.status(500).json({ error: "Error deleting product" });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send(`First SQL Project is running on port ${PORT}`);
 });
